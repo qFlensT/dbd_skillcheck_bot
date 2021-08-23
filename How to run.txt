@@ -1,0 +1,13 @@
+[ENG]
+1. Donwload Python at [https://www.python.org/]
+2. Add Python to Path
+3. Run in cmd this code: [pip install -r requirements.txt] (Being in the directory with project files)
+Or run this in cmd [pip install opencv-python numpy mss pynput pywin32 pyautogui pyqt5] (From any directory)
+4. Run [main.py] file
+
+[RU]
+1. Скачайте Python по следующей ссылке [https://www.python.org/]
+2. Добавьте Python в PATH (Будет галочка при установке)
+3. Запустите этот код в коммандной строке: [pip install -r requirements.txt] (Находясь в директории с файлами проекта)
+Или запустите этот код в коммандной строке: [pip install opencv-python numpy mss pynput pywin32 pyautogui pyqt5] (В любой директории)
+4. Запустите [main.py]
