@@ -15,6 +15,10 @@
 ```bash
 pip install opencv-python numpy mss pynput pywin32 pyautogui pyqt5
 ```
+Или, находясь в директории с файлами проекта: в cmd
+```bash
+pip install -r requirements.txt
+```
 3. Скачать python файлы
 4. Запустить main.pyw
 # Рекомендации по использованию
