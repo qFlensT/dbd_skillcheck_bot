@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import (QWidget, QLabel, QPushButton, QTextBrowser,
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QRect
 from threading import Thread
-from multiprocessing import Process, Value, Array
+from multiprocessing import Process, Value, Array, freeze_support
 from ctypes import c_bool, c_int
 from pynput.keyboard import Key, KeyCode, Listener
 import configparser
@@ -22,7 +22,10 @@ from get_target_info import get_target_window_info
 class DeadByDaylightScript(QMainWindow):
     def __init__(self):
         super().__init__()
-
+        
+        # Needed for windows (multiprocessing cause to spawn new window)
+        freeze_support()
+        
         # Init gui
         self.init_gui()
 
@@ -305,8 +308,8 @@ class DeadByDaylightScript(QMainWindow):
             "Key.up":"Up"
         }
         try:
+            name = str(name).replace("'", "")
             if use_keynames:
-                name = str(name).replace("'", "")
                 keyname = keynames.get(name)
                 
                 if keyname == None:
