@@ -20,7 +20,7 @@ from get_target_info import get_target_window_info
 
 
 class DeadByDaylightScript(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         
         # Needed for windows (multiprocessing cause to spawn new window)
@@ -55,16 +55,28 @@ class DeadByDaylightScript(QMainWindow):
                                             self.window_rect))
         self.get_target_info_thread.start()
 
-    def init_gui(self):
+    def init_gui(self) -> None:
         """Initing gui
         """
+        
+        def __set_pointer_size(widget: PyQt5.QtWidgets, size: int) -> None:
+            """Sets pointer size of text
+
+            Args:
+                widget (PyQt5.QtWidgets): like QCheckBox
+                size (int): size of pointer (px)
+            """
+            font = QFont()
+            font.setPointSize(size)
+            widget.setFont(font)
+        
         self.setFixedSize(500, 118)
         self.setWindowTitle("DeadByDaylight Script [by FlensT]")
 
         # Auto SkillCheck
         self.asc_checkbox = QCheckBox(self)
         self.asc_checkbox.setGeometry(QRect(10, 10, 111, 17))
-        self.__set_pointer_size(self.asc_checkbox, 10)
+        __set_pointer_size(self.asc_checkbox, 10)
         self.asc_checkbox.setText("Auto SkillCheck")
 
         self.asc_btn = QPushButton(self)
@@ -83,7 +95,7 @@ class DeadByDaylightScript(QMainWindow):
         # Auto M1
         self.am1_checkbox = QCheckBox(self)
         self.am1_checkbox.setGeometry(QRect(10, 40, 70, 17))
-        self.__set_pointer_size(self.am1_checkbox, 10)
+        __set_pointer_size(self.am1_checkbox, 10)
         self.am1_checkbox.setText("Auto M1")
 
         self.am1_btn = QPushButton(self)
@@ -101,7 +113,7 @@ class DeadByDaylightScript(QMainWindow):
         # Auto Wigle
         self.aw_checkbox = QCheckBox(self)
         self.aw_checkbox.setGeometry(QRect(10, 70, 131, 17))
-        self.__set_pointer_size(self.aw_checkbox, 10)
+        __set_pointer_size(self.aw_checkbox, 10)
         self.aw_checkbox.setText("[BETA] Auto Wigle")
 
         self.aw_label = QLabel(self)
@@ -118,7 +130,7 @@ class DeadByDaylightScript(QMainWindow):
         # Logging
         self.log_label = QLabel(self)
         self.log_label.setGeometry(QRect(260, 10, 51, 16))
-        self.__set_pointer_size(self.log_label, 10)
+        __set_pointer_size(self.log_label, 10)
         self.log_label.setText("Logging")
 
         self.log_browser = QTextBrowser(self)
@@ -126,18 +138,14 @@ class DeadByDaylightScript(QMainWindow):
 
         self.show()
 
-    def __set_pointer_size(self, widget: PyQt5.QtWidgets, size: int) -> None:
-        """Sets pointer size of text
+    def __checkbox_handle(self, toggle: bool, launch_method: object, function: object, *args, **kwargs) -> None:
+        """Accepts a function enable signal from checkboxes and (starts / disables) (processes / threads)
 
         Args:
-            widget (PyQt5.QtWidgets): like QCheckBox
-            size (int): size of pointer (px)
+            toggle (bool): On / Off toggle
+            launch_method (object): Process or Thread object like `multiprocessing.Process`
+            function (object): function that's need to be started / stopped
         """
-        font = QFont()
-        font.setPointSize(size)
-        widget.setFont(font)
-
-    def __checkbox_handle(self, toggle: bool, launch_method: object, function: object, *args, **kwargs):
         sender = self.sender()
         if sender.isChecked():
             toggle.value = 1
@@ -148,7 +156,7 @@ class DeadByDaylightScript(QMainWindow):
             self.log_browser.append(f"[+] {sender.text()} -> OFF")
 
     def __changekey_btn_handle(self, partition:str, param:str) -> None:
-        """Changes keybind whatever the button is clicked
+        """Changes keybind (via updating config.ini file) when the keybind button is clicked
         NEED TO COMPLETE
         WHAT NEEDED:
         1. Add processing  - if several buttons are pressed at the same time
@@ -167,31 +175,31 @@ class DeadByDaylightScript(QMainWindow):
             try:
                 self.log_browser.append(f"[+] Button {key} has been selected")
                 self.__update_config(partition, param, key)
-                sender.setStyleSheet("")
                 return False
             except:
                 self.log_browser.append("[ERROR] An error occured while changing the button")
+                self.__update_config(partition, param, "None")
                 return False
+                
 
         listener = Listener(on_press=on_press)
         listener.start()
 
     def __create_config(self):
-        """Create config file
+        """Creates a config file
+        Runs if no config.ini file was found
         """
         self.config.add_section("AutoSkillCheck")
-        self.config.set("AutoSkillCheck", "keycode", "c")
+        self.config.set("AutoSkillCheck", "keycode", "c") # c is default keybind
 
         self.config.add_section("AutoM1")
-        self.config.set("AutoM1", "keycode", "Key.alt_l")
+        self.config.set("AutoM1", "keycode", "Key.alt_l") # alt_l is default keybind
 
         with open(f"{os.getcwd()}\\config.ini", "w") as config_file:
             self.config.write(config_file)
 
     def __load_config(self):
-        """NEED TO COMPLETE
-        WHAT NEEDED:
-        1. Add processing - configparser.NoSectionError: No section
+        """Loads settings from a configuration file
         """
         self.log_browser.append("[+] Loading config...")
 
@@ -211,14 +219,29 @@ class DeadByDaylightScript(QMainWindow):
 
         self.log_browser.append("[+] Config loaded!")
 
-    def __update_config(self, partition: str, param: str, value: str):
+    def __update_config(self, partition: str, param: str, value: str) -> None:
+        """Updates the config file and calls the `self.load_config()` function
+
+        Args:
+            partition (str): Partition of cfg file
+            param (str): Parameter of cfg file
+            value (str): The value to be written
+        """
         self.config.set(partition, param, str(value).replace("'", ""))
         with open(f"{os.getcwd()}\\config.ini", "w") as config_file:
             self.config.read(f"{os.getcwd()}\\config.ini")
             self.config.write(config_file)
             self.__load_config()
     
-    def __read_keycode(self, keycode_str:str):
+    def __read_keycode(self, keycode_str:str) -> object:
+        """Takes a string keycode object and returns it as an object of pynput.keyboard
+
+        Args:
+            keycode_str (str): keycode thats need to be converted in pynput.keyboard object
+
+        Returns:
+            object: pynput.keyboard object
+        """
         keycode = None
         try:
             keycode = eval(keycode_str)
@@ -231,19 +254,19 @@ class DeadByDaylightScript(QMainWindow):
                     # self.log_browser.append("[DEBUG] Config (keycode) has <KeyCode> like keycode")
                     return keycode
                 else:
-                    # self.log_browser.append("[DEBUG] Config (keycode) multiple characters found, delete config file and restart the program")
-                    pass
+                    self.log_browser.append("[ERROR] Config (keycode) multiple characters found, delete config file and restart the program")
             except:
                 self.log_browser.append("[ошибочка] не пиши гавно в конфиге")
         except:
-            self.log_browser.append("[DEBUG] Can't load config (keycode) - unknown type of keycode")
+            self.log_browser.append("[ERROR] Can't load config (keycode) - unknown type of keycode")
 
-    def __change_btn_name(self, btn_object: object, name: str, use_keynames: bool=True):
-        """Need to finish
+    def __change_btn_name(self, btn_object: object, name: str, use_keynames: bool=True) -> None:
+        """Changes the name of the button
 
         Args:
-            btn_object (object): [description]
-            name (str): [description]
+            btn_object (object): The button whose name you want to change
+            name (str): New name of button
+            use_keynames (bool, optional): If necessary to use keynames dict(). Defaults to True.
         """
         keynames = {
             "Key.alt":"Alt",
@@ -310,6 +333,8 @@ class DeadByDaylightScript(QMainWindow):
         try:
             name = str(name).replace("'", "")
             if use_keynames:
+                
+                btn_object.setStyleSheet("") # Set default style of btn_object
                 keyname = keynames.get(name)
                 
                 if keyname == None:
@@ -322,11 +347,19 @@ class DeadByDaylightScript(QMainWindow):
             self.log_browser.append(f"[ERROR] Can't change name of btn ({btn_object})")
             btn_object.setText(":(")
 
-    def closeEvent(self, event):
+    def __turn_off_tasks(self) -> None:
+        """Turn off all tasks
+        """
         self.gti_toogle.value = 0
         self.asc_toggle.value = 0
         self.am1_toggle.value = 0
         self.aw_toggle.value = 0
+
+    def closeEvent(self, event) -> None:
+        """Looking for a close event of PyQt
+        """
+        self.__turn_off_tasks()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
