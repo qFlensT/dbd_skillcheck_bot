@@ -1,9 +1,11 @@
+from PyQt5.QtWidgets import QFileDialog
 from mss.windows import MSS as mss
 import numpy as np
+from os import getcwd
 
 
 class Utility:
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     def get_sct(self, monitor: dict()) -> np.ndarray:
@@ -17,3 +19,8 @@ class Utility:
         """
         with mss() as sct:
             return np.array(sct.grab(monitor))
+        
+    def get_file_path(self, parent) -> str:
+        file_path = QFileDialog.getOpenFileName(parent, "Open Image",
+                                                getcwd(), "Image files (*.jpg *.png)")[0]
+        return file_path

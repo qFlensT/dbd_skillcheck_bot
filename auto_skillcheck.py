@@ -1,14 +1,21 @@
+from typing import Union
 from utility import Utility
 import numpy as np
 import cv2
 from pynput.keyboard import Controller, KeyCode
 from time import sleep
+import requests
 
 
 def auto_skillcheck(toggle: bool, is_target_active: bool, 
-                    window_rect: list, keycode: object=KeyCode(0x43)):
+                    window_rect: list, sct_monitor: Union[dict, str], ai_toggle: bool, keycode: object=KeyCode(0x43)):
     """auto_skillcheck function
     """
+    def improve_ai(img: np.ndarray):
+        addr = 'http://185.251.91.76/send_skillcheck'
+        _, img_encoded = cv2.imencode('.jpg', img)
+        response = requests.post(addr, data=img_encoded.tobytes(), timeout=1.5)
+    
     low_white = np.array([250, 250, 250])
     high_white = np.array([255, 255, 255])
 
@@ -16,6 +23,9 @@ def auto_skillcheck(toggle: bool, is_target_active: bool,
     high_red = np.array([255, 30, 30])
     
     last_rect = None
+    utility = Utility()
+
+    monitor = sct_monitor
 
     white_cords_buffer = set()
 
@@ -23,13 +33,14 @@ def auto_skillcheck(toggle: bool, is_target_active: bool,
         if toggle.value:
             if is_target_active.value:
                 
-                if window_rect != last_rect:
+                if (window_rect != last_rect) and (sct_monitor == "default"):
                     monitor = {"top": int(window_rect[3]/2 + window_rect[1] - 70), #screenshot capture area
                             "left": int(window_rect[2]/2 + window_rect[0] - 70), 
                             "width": 140, 
                             "height": 140}
+                    last_rect = monitor.copy()
 
-                img = cv2.cvtColor(Utility().get_sct(monitor), cv2.COLOR_BGR2RGB)
+                img = cv2.cvtColor(utility.get_sct(monitor), cv2.COLOR_BGR2RGB)
 
                 white_range = cv2.inRange(img, low_white, high_white)
                 red_range = cv2.inRange(img, low_red, high_red)
@@ -47,7 +58,8 @@ def auto_skillcheck(toggle: bool, is_target_active: bool,
                     if red_range_cords.intersection(white_cords_buffer):
                         Controller().tap(keycode)
                         white_cords_buffer.clear()
-                        sleep(1)
+                        if ai_toggle.value:
+                            improve_ai(img)
                         
                 if len(red_range_cords) == 0:
                     white_cords_buffer.clear()

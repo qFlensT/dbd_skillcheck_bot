@@ -2,7 +2,7 @@ import win32gui
 import time
 
 
-def get_target_window_info(toggle: bool, is_target_active: bool, window_rect: list) -> (bool, list):
+def get_target_window_info(toggle: bool, is_target_active: bool, window_rect: list) -> None:
     """Gets target window info
 
     Returns:
