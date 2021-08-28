@@ -28,6 +28,6 @@ pip install -r requirements.txt
 2. AutoWigle сейчас нормально работает только при разрешении 1920 на 1080, при этом вызывая ложные срабатывания в особо ярких местах.
 3. Рекомендуется НЕ использовать комплексные кнопки (типа space), из-за которых возможны ложные срабатывания
 # Скриншот
-![image](https://user-images.githubusercontent.com/69106429/130495785-1e99b776-5cec-43f3-8733-ecd51ff4c493.png)
+![dq](https://user-images.githubusercontent.com/69106429/131217271-0a477dd2-c7cd-42b7-948e-6c828d5ea784.png)
 # Видео
 https://youtu.be/KhAYn-e8cK4
