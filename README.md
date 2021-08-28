@@ -28,3 +28,5 @@ pip install -r requirements.txt
 3. Рекомендуется НЕ использовать комплексные кнопки (типа space), из-за которых возможны ложные срабатывания
 # Скриншот
 ![image](https://user-images.githubusercontent.com/69106429/130495785-1e99b776-5cec-43f3-8733-ecd51ff4c493.png)
+# Видео
+https://youtu.be/KhAYn-e8cK4
