@@ -14,7 +14,7 @@
 1. Установить питон и добавить в PATH
 2. Установить библиотеки: в cmd
 ```bash
-pip install opencv-python numpy mss pynput pywin32 pyautogui pyqt5
+pip install opencv-python numpy mss pynput pywin32 pyautogui pyqt5 requests
 ```
 Или, находясь в директории с файлами проекта: в cmd
 ```bash
