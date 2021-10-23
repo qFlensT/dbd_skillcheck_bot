@@ -31,7 +31,7 @@ def auto_skillcheck(toggle: bool, is_target_active: bool,
 
     while True:
         if toggle.value:
-            if is_target_active.value:
+            if is_target_active:
                 
                 if (window_rect != last_rect) and (sct_monitor == "default"):
                     monitor = {"top": int(window_rect[3]/2 + window_rect[1] - 70), #screenshot capture area

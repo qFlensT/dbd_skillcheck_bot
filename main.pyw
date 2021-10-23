@@ -149,7 +149,7 @@ class DeadByDaylightScript(QMainWindow):
                                                                                 Process,
                                                                                 auto_skillcheck,
                                                                                 self.asc_toggle, # args
-                                                                                self.is_target_active,
+                                                                                True,
                                                                                 self.window_rect,
                                                                                 self.asc_monitor,
                                                                                 self.asc_ai_toggle, 
@@ -186,7 +186,7 @@ class DeadByDaylightScript(QMainWindow):
                                                                                 Thread,
                                                                                 auto_m1,
                                                                                 self.am1_toggle, # args
-                                                                                self.is_target_active, 
+                                                                                True, 
                                                                                 self.am1_keycode))
         
         # Auto M2
@@ -215,7 +215,7 @@ class DeadByDaylightScript(QMainWindow):
                                                                                 Thread,
                                                                                 auto_m2,
                                                                                 self.am2_toggle, # args
-                                                                                self.is_target_active, 
+                                                                                True, 
                                                                                 self.am2_keycode))
                 
         # Auto Wigle
@@ -253,7 +253,7 @@ class DeadByDaylightScript(QMainWindow):
                                                                             Thread,
                                                                             auto_wigle,
                                                                             self.aw_toggle, # args
-                                                                            self.is_target_active,
+                                                                            True,
                                                                             self.aw_monitor_hand,
                                                                             self.aw_monitor_arrow))
         
