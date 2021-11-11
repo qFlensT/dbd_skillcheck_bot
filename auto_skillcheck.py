@@ -4,7 +4,6 @@ import numpy as np
 import cv2
 from pynput.keyboard import Controller, KeyCode
 from time import sleep
-import requests
 
 
 def auto_skillcheck(toggle: bool, is_target_active: bool, 
