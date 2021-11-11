@@ -4,17 +4,12 @@ import numpy as np
 import cv2
 from pynput.keyboard import Controller, KeyCode
 from time import sleep
-import requests
 
 
 def auto_skillcheck(toggle: bool, is_target_active: bool, 
-                    window_rect: list, sct_monitor: Union[dict, str], ai_toggle: bool, keycode: object=KeyCode(0x43)):
+                    window_rect: list, sct_monitor: Union[dict, str], keycode: object=KeyCode(0x43)):
     """auto_skillcheck function
     """
-    def improve_ai(img: np.ndarray):
-        addr = 'http://185.251.91.76/send_skillcheck'
-        _, img_encoded = cv2.imencode('.jpg', img)
-        response = requests.post(addr, data=img_encoded.tobytes(), timeout=1.5)
     
     low_white = np.array([250, 250, 250])
     high_white = np.array([255, 255, 255])
@@ -31,7 +26,7 @@ def auto_skillcheck(toggle: bool, is_target_active: bool,
 
     while True:
         if toggle.value:
-            if is_target_active:
+            if is_target_active.value:
                 
                 if (window_rect != last_rect) and (sct_monitor == "default"):
                     monitor = {"top": int(window_rect[3]/2 + window_rect[1] - 70), #screenshot capture area
@@ -58,8 +53,7 @@ def auto_skillcheck(toggle: bool, is_target_active: bool,
                     if red_range_cords.intersection(white_cords_buffer):
                         Controller().tap(keycode)
                         white_cords_buffer.clear()
-                        if ai_toggle.value:
-                            improve_ai(img)
+                        sleep(1)
                         
                 if len(red_range_cords) == 0:
                     white_cords_buffer.clear()

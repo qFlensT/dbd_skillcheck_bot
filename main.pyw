@@ -44,9 +44,6 @@ class DeadByDaylightScript(QMainWindow):
         self.am2_toggle = Value(c_bool, 0) # auto m1
         self.aw_toggle = Value(c_bool, 0) # auto wigle
         
-        """ПОТОМ УБРАТЬ"""
-        self.asc_ai_toggle = Value(c_bool, 1)
-        
         # Load keycodes (params for script's functions)
         self.asc_keycode = None
         self.am1_keycode = None
@@ -106,14 +103,6 @@ class DeadByDaylightScript(QMainWindow):
         self.asc_checkbox.adjustSize()
         self.asc_checkbox.move(10, 10)
         
-        # AI Checkbox
-        self.asc_ai_checkbox = QCheckBox(self.asc_tab)
-        self.asc_ai_checkbox.setChecked(True)
-        __set_pointer_size(self.asc_ai_checkbox, 10)
-        self.asc_ai_checkbox.setText("AI Improve")
-        self.asc_ai_checkbox.adjustSize()
-        self.asc_ai_checkbox.move(130, 10)
-        
         # Change Keybind
         self.asc_keybind_lbl = QLabel(self.asc_tab)
         __set_pointer_size(self.asc_keybind_lbl, 10)
@@ -149,12 +138,10 @@ class DeadByDaylightScript(QMainWindow):
                                                                                 Process,
                                                                                 auto_skillcheck,
                                                                                 self.asc_toggle, # args
-                                                                                True,
+                                                                                self.is_target_active,
                                                                                 self.window_rect,
                                                                                 self.asc_monitor,
-                                                                                self.asc_ai_toggle, 
                                                                                 self.asc_keycode))
-        self.asc_ai_checkbox.stateChanged.connect(self.__ai_checkbox_handle)
         
         self.asc_monitor_btn.clicked.connect(lambda x: self.__change_monitor_btn_handle("AutoSkillCheck", "monitor"))
         
@@ -186,7 +173,7 @@ class DeadByDaylightScript(QMainWindow):
                                                                                 Thread,
                                                                                 auto_m1,
                                                                                 self.am1_toggle, # args
-                                                                                True, 
+                                                                                self.is_target_active, 
                                                                                 self.am1_keycode))
         
         # Auto M2
@@ -215,7 +202,7 @@ class DeadByDaylightScript(QMainWindow):
                                                                                 Thread,
                                                                                 auto_m2,
                                                                                 self.am2_toggle, # args
-                                                                                True, 
+                                                                                self.is_target_active, 
                                                                                 self.am2_keycode))
                 
         # Auto Wigle
@@ -253,7 +240,7 @@ class DeadByDaylightScript(QMainWindow):
                                                                             Thread,
                                                                             auto_wigle,
                                                                             self.aw_toggle, # args
-                                                                            True,
+                                                                            self.is_target_active,
                                                                             self.aw_monitor_hand,
                                                                             self.aw_monitor_arrow))
         
@@ -274,13 +261,6 @@ class DeadByDaylightScript(QMainWindow):
         self.log_browser.move(305, 20)
         
         self.show()
-
-    def __ai_checkbox_handle(self):
-        sender = self.sender()
-        if sender.isChecked():
-            self.asc_ai_toggle.value = True
-        else:
-            self.asc_ai_toggle.value = False
 
     def __checkbox_handle(self, toggle: bool, launch_method: object, function: object, *args, **kwargs) -> None:
         """Accepts a function enable signal from checkboxes and (starts / disables) (processes / threads)
@@ -545,7 +525,6 @@ class DeadByDaylightScript(QMainWindow):
         self.am1_toggle.value = 0
         self.am2_toggle.value = 0
         self.aw_toggle.value = 0
-        # Потом убрать 49 279 158
 
     def closeEvent(self, event) -> None:
         """Looking for a close event of PyQt
