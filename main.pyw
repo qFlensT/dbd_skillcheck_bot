@@ -348,11 +348,10 @@ class DeadByDaylightScript(QMainWindow):
         if not os.path.exists(config_file_path):
             self.log_browser.append("[=] Config not exists, creating new one")
             self.__create_config()
-        
-        self.config.read(f"{os.getcwd()}\\config.ini")
 
         # Here loading settings from config file 
         try:
+            self.config.read(f"{os.getcwd()}\\config.ini")
             #Auto SkillCheck
             self.asc_keycode = self.__read_keycode(self.config.get("AutoSkillCheck", "keycode"))
             self.__change_btn_name(self.asc_keybind_btn, self.asc_keycode)
@@ -416,8 +415,12 @@ class DeadByDaylightScript(QMainWindow):
                     self.log_browser.append("[ERROR] Config (keycode) multiple characters found, delete config file and restart the program")
             except:
                 self.log_browser.append("[ошибочка] не пиши гавно в конфиге")
+                self.__create_config()
+                self.__load_config()
         except:
             self.log_browser.append("[ERROR] Can't load config (keycode) - unknown type of keycode")
+            self.__create_config()
+            self.__load_config()
 
     def __read_monitor(self, monitor_str: str) -> dict:
         try:
